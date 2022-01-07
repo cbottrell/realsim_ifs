@@ -197,9 +197,9 @@ def apply_seeing(datacube, kpc_per_pixel, redshift = 0.05,
             bar.next()
         bar.finish()          
     else:
-        if type(n_processes) != int:
-            raise Exception('use_threading is true but n_processes is not an integer. Stopping...')
-        pool = multiprocessing.Pool(n_processes)
+        if type(n_threads) != int:
+            raise Exception('use_threading is true but n_threads is not an integer. Stopping...')
+        pool = multiprocessing.Pool(n_threads)
         args = [(datacube[i],kernel) for i in range(len(datacube))]
         outcube = np.array(pool.map(convolve_slice,args))
         pool.close()
