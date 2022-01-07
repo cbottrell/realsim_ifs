@@ -159,12 +159,6 @@ def apply_seeing(datacube, kpc_per_pixel, redshift = 0.05,
     
     outcube: (np.ndarray) seeing-convolved datacube with same shape as input datacube.
     '''
-    
-    # threadable kernel-convolution function
-    def convolve_slice(args):
-        img,kernel=args
-        return convolve(img,kernel)
-    
     # cosmology
     if cosmo == None:
         from astropy.cosmology import Planck15 as cosmo
@@ -193,7 +187,7 @@ def apply_seeing(datacube, kpc_per_pixel, redshift = 0.05,
         outcube = np.zeros_like(datacube)
         bar = FillingCirclesBar('Applying atomspheric seeing convolution', max=len(outcube))
         for i in range(len(outcube)):
-            outcube[i]=convolve_slice((datacube[i],kernel))
+            outcube[i]=_convolve_slice((datacube[i],kernel))
             bar.next()
         bar.finish()          
     else:
@@ -201,12 +195,17 @@ def apply_seeing(datacube, kpc_per_pixel, redshift = 0.05,
             raise Exception('use_threading is true but n_threads is not an integer. Stopping...')
         pool = multiprocessing.Pool(n_threads)
         args = [(datacube[i],kernel) for i in range(len(datacube))]
-        outcube = np.array(pool.map(convolve_slice,args))
+        outcube = np.array(pool.map(_convolve_slice,args))
         pool.close()
         pool.join()
         del pool
 
     return outcube 
+
+# threadable kernel-convolution function
+def _convolve_slice(args):
+    img,kernel=args
+    return convolve(img,kernel)
 
 def _error_nobs():
     print('You must select `n_observations` that is either:')
