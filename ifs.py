@@ -57,7 +57,7 @@ def manga_seeing(seed=None,seeing_pool=None):
         # get drp all file for guide-star seeing
         if not os.access(drpall_name,0): 
             drpall_url = f'https://data.sdss.org/sas/dr16/manga/spectro/redux/v2_4_3/drpall-v2_4_3.fits'
-            os.system(f'wget {drpall_url} -O {drpall_name}'
+            os.system(f'wget {drpall_url} -O {drpall_name}')
         drpall_data = fits.getdata(drpall_name)
         seeing_pool = drpall_data['SEEMED']
     else:
