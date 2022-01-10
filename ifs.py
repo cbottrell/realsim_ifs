@@ -53,17 +53,11 @@ def manga_seeing(seed=None,seeing_pool=None):
         np.random.seed(seed)
         
     if seeing_pool is None:
-        drpall_name = 'drpall-v2_4_3.fits'
+        drpall_name = f'{realsimPath}/Resources/IFS/drpall-v2_4_3.fits'
         # get drp all file for guide-star seeing
         if not os.access(drpall_name,0): 
-            drpall_backup = f'{realsimPath}/Resources/IFS/{drpall_name}'
-            print(drpall_backup)
-            # check for local copy in Resources directory
-            if os.access(drpall_backup,0):
-                cp(drpall_backup,drpall_name)
-            else:
-                drpall_url = 'https://data.sdss.org/sas/dr16/manga/spectro/redux/v2_4_3/{}'.format(drpall_name)
-                os.system('wget {}'.format(drpall_url))
+            drpall_url = f'https://data.sdss.org/sas/dr16/manga/spectro/redux/v2_4_3/drpall-v2_4_3.fits'
+            os.system(f'wget {drpall_url} -O {drpall_name}'
         drpall_data = fits.getdata(drpall_name)
         seeing_pool = drpall_data['SEEMED']
     else:
