@@ -1,4 +1,16 @@
 ![Logo](Figures/IFS/Logo.png)
-RealSim-IFS is a tool for generating survey-realistic integral-field spectroscopy (IFS) obvervations of galaxies from numerical  simulations of galaxy formation and evolution. The tool is designed primarily to emulate the observing strategies of major IFS galaxy surveys in astronomy. But it also offers the flexibility to design your own observing strategies. RealSim-IFS has built-in functions supporting SAMI and MaNGA IFU footprints. 
+RealSim-IFS is a Python tool for generating survey-realistic integral-field spectroscopy (IFS) obvervations of galaxies from numerical simulations of galaxy formation. The tool is designed primarily to emulate current and experimental observing strategies for IFS galaxy surveys in astronomy. RealSim-IFS has built-in functions supporting SAMI and MaNGA IFU footprints, but supports any fiber-based IFU design, in general.
 
-Full documentation (and justification) for the code is provided in Chapter 4 of my [PhD Thesis](https://dspace.library.uvic.ca/bitstream/handle/1828/11975/Bottrell_Connor_PhD_2020.pdf?sequence=5&isAllowed=y).
+Full documentation (and justification) for the code is provided in Chapter 4 of my [PhD Thesis](https://dspace.library.uvic.ca/bitstream/handle/1828/11975/Bottrell_Connor_PhD_2020.pdf?sequence=5&isAllowed=y). 
+
+## Installation
+
+RealSim-IFS is not a pypy package. The github repository but be cloned to your Python environment's path. By convention, it should be placed in the `site-packages` directory of your Python environment. For example, with a conda environment active:
+```
+conda activate my_env
+cd $CONDA_PREFIX/lib/pythonX.x/site-packages
+git clone https://github.com/cbottrell/realsim_ifs.git
+```
+Where X.x is the Python version for the environment. That's it!
+
+
