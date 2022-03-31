@@ -16,3 +16,7 @@ Where X.x is the Python version for the environment. That's it!
 ## Tutorial
 
 A Jupyter notebook [tutorial](https://github.com/cbottrell/realsim_ifs/blob/master/Tutorials/IFS/Tutorial.ipynb) using RealSim-IFS to make [SDSS-IV MaNGA](https://www.sdss.org/instruments/) stellar kinematics for a [TNG50-1](https://www.tng-project.org/) disk galaxy is included with the package (along with the input datacube). It can be found here: `Tutorials/IFS/Tutorial.ipynb`.
+
+## Precision
+
+RealSim-IFS can reproduce both the flux and variance propagation of real galaxy spectra to cubes. The [precision](https://github.com/cbottrell/realsim_ifs/blob/master/Tutorials/IFS/Precision.ipynb) notebook uses real calibrated fiber spectra from the MaNGA survey to generate flux and variance cubes that are identical to those produced by the MaNGA data reduction pipeline.
