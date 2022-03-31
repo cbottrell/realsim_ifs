@@ -249,13 +249,13 @@ def manga_ifu(n_observations="fiducial", fibers_per_side=4,
     
     KEYWORDS:
     
-    n_observations: (int or string) the integer number of exposures you wish to take with a given fibre bundle type. `n_observations` can also be set to "fiducial" to restore all parameters to the default MaNGA instrumental specs and three-exposure offset pattern used to "dither" the data. In short, dithering is used to fill in the gaps between the fibre footprints of individual exposures. Dithering is also important because, for the MaNGA instrument, it enables adequate sampling of the typical atmospheric point-spread function (1.6 arcsec). You can alternatively experiment with your own exposure pattern and dithering strategy by setting `n_observations` to any positive integer. In the case of `n_observations` greater than 1, the `bundle_x(y)offset_arcsec` and `rotation_degrees` parameters must be lists or numpy arrays. See their descriptions for details.
+    n_observations: (int or string) the integer number of exposures you wish to take with a given fiber bundle type. `n_observations` can also be set to "fiducial" to restore all parameters to the default MaNGA instrumental specs and three-exposure offset pattern used to "dither" the data. In short, dithering is used to fill in the gaps between the fiber footprints of individual exposures. Dithering is also important because, for the MaNGA instrument, it enables adequate sampling of the typical atmospheric point-spread function (1.6 arcsec). You can alternatively experiment with your own exposure pattern and dithering strategy by setting `n_observations` to any positive integer. In the case of `n_observations` greater than 1, the `bundle_x(y)offset_arcsec` and `rotation_degrees` parameters must be lists or numpy arrays. See their descriptions for details.
     
-    fibers_per_side: (int) is the number of fibres along each side of a MaNGA hexagonal fibre bundle. Only one `fibers_per_side` can be set for a given observation pattern (i.e. manga_observe does not allow combination of fibre bundles of different size in the same observing pattern). `fibers_per_side` must be a positive interger greater than 0. In the most limited scenario, a single fiber at (0,0) can be made by setting `n_observations` to 1 and `fibers_per_side` to 1. Setting `n_observations` to "fiducial" and `fibers_per_side` to an integer greater than zero will produce the observing pattern with that particular fibre size and with the exact MaNGA core, fiber, and exposure specs.
+    fibers_per_side: (int) is the number of fibers along each side of a MaNGA hexagonal fiber bundle. Only one `fibers_per_side` can be set for a given observation pattern (i.e. manga_observe does not allow combination of fiber bundles of different size in the same observing pattern). `fibers_per_side` must be a positive interger greater than 0. In the most limited scenario, a single fiber at (0,0) can be made by setting `n_observations` to 1 and `fibers_per_side` to 1. Setting `n_observations` to "fiducial" and `fibers_per_side` to an integer greater than zero will produce the observing pattern with that particular fiber size and with the exact MaNGA core, fiber, and exposure specs.
     
-    bundle_name: (string) supersedes `fibers_per_side`. Setting `bundle_name` to a valid MaNGA fibre bunde name (e.g. `N61`) will generate bundles with that specific fibre pattern and IGNORE the `fibers_per_side` parameter. By default, `bundle_name` is `None` and must be set to `None` to use the `fibers_per_side` keyword.
+    bundle_name: (string) supersedes `fibers_per_side`. Setting `bundle_name` to a valid MaNGA fiber bunde name (e.g. `N61`) will generate bundles with that specific fiber pattern and IGNORE the `fibers_per_side` parameter. By default, `bundle_name` is `None` and must be set to `None` to use the `fibers_per_side` keyword.
     
-    fiber_diameter_arcsec AND core_diameter_arcsec: (floats) are the desired angular sizes of each individual fibre (core+cladding) and core in the bundle in [arcsec]. By default, these are set to the exact MaNGA specifications.
+    fiber_diameter_arcsec AND core_diameter_arcsec: (floats) are the desired angular sizes of each individual fiber (core+cladding) and core in the bundle in [arcsec]. By default, these are set to the exact MaNGA specifications.
     
     rotation_degrees: (float) sets the counter-clockwise rotation (in degrees) of an individual exposure or full observing pattern. If `n_observations` is "fiducial" or 1, `rotation_degrees` must be a single float. `n_observations` is an integer greater than 1, then `rotation_degrees` must be a list or numpy array whose elements give the rotation of each individual exposure. For the same rotation of each exposure, set the `rotation_degrees` keyword to something like np.zeros(n_observations)+rotation_degrees. 
     
@@ -696,7 +696,7 @@ def _change_coords(core_x_pixels,core_y_pixels,core_diameter_pixels,
 def ifu_to_grid(fiber_data,core_x_pixels,core_y_pixels,core_diameter_pixels,
                 grid_dimensions_pixels,use_gaussian_weights=True,
                 gaussian_sigma_pixels=1.4, rlim_pixels=3.2,
-                use_broadcasting=False):
+                use_broadcasting=False,ivar_data=None):
     '''
     With a fiber core array [ndarray] with shape (`N_fibers`,`Nels`) along with their x- and y- coordinates (centroid) on a grid of dimensions `grid_dimensions_pixels`, this tool computes the intensity contribution of each fiber to each pixel of the grid. There are two options:
     
@@ -716,6 +716,10 @@ def ifu_to_grid(fiber_data,core_x_pixels,core_y_pixels,core_diameter_pixels,
     
     fiber_data: (np.ndarray) with shape (N_fibers,Nels) are the fiber data arrays (core array). These contain the spectra measured in each fiber to be distributed on the output grid.
     
+    core_x[y]_pixels: (np.array) with shape (N_fibers,) are the x[y] centroid positions of each fiber core in the output grid.
+    
+    core_diameter_pixels: (float,np.array) of fiber core diameters in output grid pixels.
+    
     grid_dimensions_pixels: (int,tuple) dimensions of the output grid. If tuple, should be the (spatial_x, spatial_y) shape of the output grid.
     
     use_gaussian_weights: (boolean) if False (default), use method (1) outlined above. If True, use method (2). If True, the `gaussian_sigma_pixels` and `rlim_pixels` are used to determine the profile of the gaussian distribution used in the weights.
@@ -725,8 +729,11 @@ def ifu_to_grid(fiber_data,core_x_pixels,core_y_pixels,core_diameter_pixels,
     rlim_pixels: (int,float,list,np.ndarray): distance in pixels from a fiber core beyond which the weights assigned to all pixels in a weight map are zero (default None, i.e. the weights extend to infinity). 
     
     use_broadcasting: (boolean) broadcasting of the weight maps with the spectra from each fiber to produce the output datacubes can be very memory-intensive. You can estimate the memory demand by computing (N_fibers*Nels*output_spatial_y*output_spatial_x*64/8/1e9) for the size of the object that needs to be summed over the N_fibers dimension in Gigabytes. If this exceeds your memory requirements, `use_broadcasting` should be set to False. This will greatly increase the computation time at the expense of memory intensiveness.
+    
+    ivar_data: (np.ndarray) of inverse variance data with the same shape as `fiber_data`. Contains the inverse variances for `fiber_data`. If not None, an inverse variance cube will be produced alongside the output flux cube with the same shape.
     '''
     fiber_data = np.array(fiber_data,dtype=float)
+            
     data_shape = fiber_data.shape
     if len(data_shape) == 1:
         N_fibers,Nels = 1,data_shape[0]
@@ -735,6 +742,12 @@ def ifu_to_grid(fiber_data,core_x_pixels,core_y_pixels,core_diameter_pixels,
         N_fibers,Nels = data_shape[0],data_shape[1]
     else:
         raise Exception("fiber_data can have either one or two axes. No more, no less. Stopping...")
+    
+    if ivar_data is not None:
+        if ivar_data.shape==data_shape:
+            ivar_data.reshape(N_fibers,Nels)
+        else:
+            raise Exception("ivar_data must have same shape as fiber_data. Stopping...")
     
     if type(core_x_pixels) in [float,int]: 
         core_x_pixels = np.array([core_x_pixels,]).astype(float)
@@ -862,6 +875,8 @@ def ifu_to_grid(fiber_data,core_x_pixels,core_y_pixels,core_diameter_pixels,
         if not use_broadcasting:
             # perform reconstruction channel-by-channel
             out_cube = np.zeros((Nels,size_y,size_x))
+            if ivar_data is not None:
+                ivar_cube = np.zeros_like(out_cube)
             bar = FillingCirclesBar('Spatial reconstruction', max=Nels)
             for i in range(Nels):
                 weight_map_el = copy(weight_map)
@@ -875,6 +890,10 @@ def ifu_to_grid(fiber_data,core_x_pixels,core_y_pixels,core_diameter_pixels,
                                    *weight_map_el,axis=0)
                 out_el[np.isnan(out_el)]=0.
                 out_cube[i] = out_el
+                if ivar_data is not None:
+                    ivar_el = 1./np.nansum(weight_map_el**2/ivar_data[:,i].reshape(N_fibers,1,1),axis=0)
+                    ivar_el[np.isnan(ivar_el)]=0.
+                    ivar_cube[i] = ivar_el
                 bar.next()
             bar.finish()
             
@@ -891,8 +910,14 @@ def ifu_to_grid(fiber_data,core_x_pixels,core_y_pixels,core_diameter_pixels,
             out_cube = np.nansum(fiber_data.reshape(N_fibers,Nels,1,1)
                                  *weight_map,axis=0)
             out_cube[np.isnan(out_cube)]=0.
+            if ivar_data is not None:
+                ivar_cube = 1./np.nansum(weight_map**2/ivar_data.reshape(N_fibers,Nels,1,1),axis=0)
+                ivar_cube[np.isnan(ivar_cube)]=0.
             
-        return out_cube,weight_map
+        if ivar_data is not None:    
+            return [out_cube,ivar_cube],weight_map
+        else:
+            return out_cube,weight_map
     
     else:
         ##############################
@@ -956,6 +981,8 @@ def ifu_to_grid(fiber_data,core_x_pixels,core_y_pixels,core_diameter_pixels,
         if not use_broadcasting:
             # perform reconstruction channel-by-channel
             out_cube = np.zeros((Nels,size_y,size_x))
+            if ivar_data is not None:
+                ivar_cube = np.zeros_like(out_cube)
             bar = FillingCirclesBar('Spatial reconstruction', max=Nels)
             for i in range(Nels):
                 weight_map_el = copy(weight_map)
@@ -969,6 +996,10 @@ def ifu_to_grid(fiber_data,core_x_pixels,core_y_pixels,core_diameter_pixels,
                                    *weight_map_el,axis=0)
                 out_el[np.isnan(out_el)]=0.
                 out_cube[i] = out_el
+                if ivar_data is not None:
+                    ivar_el = 1./np.nansum(weight_map_el**2/ivar_data[:,i].reshape(N_fibers,1,1),axis=0)
+                    ivar_el[np.isnan(ivar_el)]=0.
+                    ivar_cube[i] = ivar_el
                 bar.next()
             bar.finish()
             
@@ -987,5 +1018,11 @@ def ifu_to_grid(fiber_data,core_x_pixels,core_y_pixels,core_diameter_pixels,
             out_cube = np.nansum(fiber_data.reshape(N_fibers,Nels,1,1)
                                  *weight_map,axis=0)
             out_cube[np.isnan(out_cube)]=0.
-            
-        return out_cube,weight_map
+            if ivar_data is not None:
+                ivar_cube = 1./np.nansum(weight_map**2/ivar_data.reshape(N_fibers,Nels,1,1),axis=0)
+                ivar_cube[np.isnan(ivar_cube)]=0.
+        
+        if ivar_data is not None:    
+            return [out_cube,ivar_cube],weight_map
+        else:
+            return out_cube,weight_map
