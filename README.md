@@ -13,6 +13,13 @@ git clone https://github.com/cbottrell/realsim_ifs.git
 ```
 Where X.x is the Python version for the environment. That's it!
 
+Your version of RealSim-IFS can be updated by going into the cloned directory and pulling changes from github. For example:
+```
+cd $CONDA_PREFIX/lib/pythonX.x/site-packages/realsim_ifs
+git pull
+```
+If you encounter issues/bugs, please try the most recent version of RealSim-IFS. If the bug persists, please do not hesitate to contact me.
+
 ## Tutorial
 
 A Jupyter notebook [tutorial](https://github.com/cbottrell/realsim_ifs/blob/master/Tutorials/IFS/Tutorial.ipynb) using RealSim-IFS to make [SDSS-IV MaNGA](https://www.sdss.org/instruments/) stellar kinematics for a [TNG50-1](https://www.tng-project.org/) disk galaxy is included with the package (along with the input datacube). It can be found here: `Tutorials/IFS/Tutorial.ipynb`.
