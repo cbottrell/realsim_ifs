@@ -5,7 +5,7 @@ Full documentation (and justification) for the code is provided in Chapter 4 of 
 
 ## Installation
 
-RealSim-IFS is not a pypy package. The github repository but be cloned to your Python environment's path. By convention, it should be placed in the `site-packages` directory of your Python environment. For example, with a conda environment active:
+RealSim-IFS is not a pypy package. The github repository can be cloned to your Python environment's path. By convention, it should be placed in the `site-packages` directory of your Python environment. For example, with a conda environment active:
 ```
 conda activate my_env
 cd $CONDA_PREFIX/lib/pythonX.x/site-packages
