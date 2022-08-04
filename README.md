@@ -1,7 +1,7 @@
 ![Logo](Figures/IFS/Logo.png)
 RealSim-IFS is a Python tool for generating survey-realistic integral-field spectroscopy (IFS) obvervations of galaxies from numerical simulations of galaxy formation. The tool is designed primarily to emulate current and experimental observing strategies for IFS galaxy surveys in astronomy. RealSim-IFS has built-in functions supporting SAMI and MaNGA IFU footprints, but supports any fiber-based IFU design, in general.
 
-Full documentation (and justification) for the code is provided in Chapter 4 of my [PhD Thesis](https://dspace.library.uvic.ca/bitstream/handle/1828/11975/Bottrell_Connor_PhD_2020.pdf?sequence=5&isAllowed=y). 
+The code is documented and demonstrated in Bottrell & Hani 2022 ([MNRAS 514 2821](https://doi.org/10.1093/mnras/stac1532)) [[arxiv](https://arxiv.org/abs/2205.15335)][[acsl](https://ascl.net/2206.022)]. If you use RealSim-IFS in your research, we would be grateful for citation of the MNRAS publication. 
 
 ## Installation
 
